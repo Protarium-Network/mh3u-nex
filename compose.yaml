@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mh3u
+      POSTGRES_USER: mh3u
+      POSTGRES_PASSWORD: mh3u
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mh3u -d mh3u"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - mh3u-postgres:/var/lib/postgresql/data
+
+  nex:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PN_MH3U_AUTH_PORT: "26400"
+      PN_MH3U_SECURE_PORT: "26401"
+      PN_MH3U_SECURE_HOST: ${PN_MH3U_SECURE_HOST:-localhost}
+      PN_MH3U_POSTGRES_URI: postgres://mh3u:mh3u@postgres:5432/mh3u?sslmode=disable
+      PN_MH3U_KERBEROS_PASSWORD: ${PN_MH3U_KERBEROS_PASSWORD:-change-me}
+      PN_MH3U_LOCAL_MODE: "1"
+      PN_MH3U_SETTINGS_PATH: /home/go/app/settings.json
+    ports:
+      - "26400:26400/udp"
+      - "26401:26401/udp"
+    volumes:
+      - ./settings.json:/home/go/app/settings.json:ro
+
+volumes:
+  mh3u-postgres:

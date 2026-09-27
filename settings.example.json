@@ -1,0 +1,10 @@
+{
+  "accounts": [
+    {
+      "platform": "wiiu",
+      "username": "1001",
+      "pid": 1001,
+      "password": "replace-with-the-local-client-nex-password"
+    }
+  ]
+}

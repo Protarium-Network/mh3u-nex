@@ -1,0 +1,20 @@
+This server is built on the Pretendo Network NEX stack:
+
+  - github.com/PretendoNetwork/nex-go
+  - github.com/PretendoNetwork/nex-protocols-go
+  - github.com/PretendoNetwork/nex-protocols-common-go
+  - github.com/PretendoNetwork/plogger-go
+  - github.com/PretendoNetwork/pq-extended
+
+all licensed under the GNU Affero General Public License v3.0. No vendored
+fork of any of these is used.
+
+The matchmaking.* / tracking.* PostgreSQL schema in database/init_postgres.go
+is hand-authored from that library's SQL (the library expects the schema to
+exist and never creates it) - see docs/matchmaking-schema.md.
+
+The Monster Hunter 3 Ultimate NEX configuration (game server ID 10104d00,
+access key cb2b2f5a, NEX 3.0.5) and every MH3U-specific wire-format quirk in
+nex/ (see PROTOCOL_COVERAGE.md) is first-party reverse engineering by this
+project, developed and iterated against real console traffic. No proprietary
+Nintendo or Capcom code or assets are included.
