@@ -94,7 +94,15 @@ func registerSecureProtocols() {
 	SecureEndpoint.RegisterServiceProtocol(extProtocol)
 	extCommon := common_matchmake_extension.NewCommonProtocol(extProtocol)
 	extCommon.SetManager(globals.MatchmakingManager)
-	extCommon.CleanupMatchmakeSessionSearchCriterias = func(types.List[matchmakingtypes.MatchmakeSessionSearchCriteria]) {}
+	// Attribs[2] encodes the region. Clearing it before the search runs lets
+	// MH3U and MH3G players match into the same rooms across regions.
+	extCommon.CleanupMatchmakeSessionSearchCriterias = func(searchCriterias types.List[matchmakingtypes.MatchmakeSessionSearchCriteria]) {
+		for i := range searchCriterias {
+			if len(searchCriterias[i].Attribs) > 2 {
+				searchCriterias[i].Attribs[2] = ""
+			}
+		}
+	}
 	extCommon.CleanupSearchMatchmakeSession = func(*matchmakingtypes.MatchmakeSession) {}
 	// MH3U uses game-specific notification type values outside the generic
 	// common handler's hard-coded 101-108 range. Retail expects an empty
